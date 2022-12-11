@@ -1,5 +1,6 @@
 import re
-import math
+
+## Very Slow Currently ##
 
 monkeyRegex = re.compile(
 r"""
@@ -55,9 +56,6 @@ class Monkey:
             else:
                 raise Exception("Operation: Unexpected Operation")
         
-        # Reduce Worry
-        currentItem = math.floor(currentItem / 3)
-
         return currentItem
     
     @staticmethod
@@ -79,7 +77,8 @@ class Monkey:
         itemlistStr = ", ".join(str(x) for x in self.items)
         return  f"Monkey {self.monkeyNum}: {itemlistStr}"\
 
-ROUND_COUNT = 20
+ROUND_COUNT = 10000
+interestingRounds = [1, 20, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]
 with open("input.txt") as f:
     monkeys = monkeyRegex.findall(f.read())
     monkeyList = []
@@ -89,11 +88,12 @@ with open("input.txt") as f:
         monkeyList.append(m)
     
     # Print Initial Status
-    print(f"### Initial ###")
-    for m in monkeyList:
-        print(m)
+    # print(f"### Initial ###")
+    # for m in monkeyList:
+    #     print(m)
 
     for round in range(ROUND_COUNT):
+        print(f"== Round {round + 1} ==")
         for monkey in monkeyList:
             while monkey.items:
                 item = monkey.runOperation()
@@ -103,9 +103,10 @@ with open("input.txt") as f:
                     monkeyList[monkey.falseTarget].items.append(item)
 
         # Print Status After Round
-        print(f"### Round {round + 1} ###")
-        for m in monkeyList:
-            print(m)
+        if (round + 1) in interestingRounds:
+            print(f"== After round {round + 1} ==")
+            for m in monkeyList:
+                print(f"Monkey {m.monkeyNum} inspected items {m.numInspections} times.")
     
     # Dump Inspection Count
     MAX_TOP_INSPECT_CNTS = 2
